@@ -1,17 +1,17 @@
 package model.dao;
 
-import model.entities.Deparment;
+import model.entities.Department;
 
 import java.util.List;
 
 public interface DepartmentDao {
-    void insert(Deparment deparment);
+    void insert(Department department);
 
-    void update(Deparment deparment);
+    void update(Department department);
 
     void deleteById(Integer id);
 
-    Deparment findById(Integer id);
+    Department findById(Integer id);
 
-    List<Deparment> findAll();
+    List<Department> findAll();
 }

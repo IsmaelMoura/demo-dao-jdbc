@@ -3,14 +3,17 @@ package model.dao.impl;
 import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
-import model.entities.Deparment;
+import model.entities.Department;
 import model.entities.Seller;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellerDaoJDBC implements SellerDao {
     private Connection connection;
@@ -51,9 +54,9 @@ public class SellerDaoJDBC implements SellerDao {
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                Deparment deparment = instantiateDeparment(resultSet);
+                Department department = instantiateDeparment(resultSet);
 
-                Seller seller = instantiateSeller(resultSet, deparment);
+                Seller seller = instantiateSeller(resultSet, department);
 
                 return seller;
             }
@@ -66,28 +69,70 @@ public class SellerDaoJDBC implements SellerDao {
         }
     }
 
-    private Seller instantiateSeller(ResultSet resultSet, Deparment deparment) throws SQLException {
+    private Seller instantiateSeller(ResultSet resultSet, Department department) throws SQLException {
         Seller seller = new Seller();
         seller.setId(resultSet.getInt("Id"));
         seller.setName(resultSet.getString("Name"));
         seller.setEmail(resultSet.getString("Email"));
         seller.setBaseSalary(resultSet.getDouble("BaseSalary"));
         seller.setBirthDate(resultSet.getDate("BirthDate"));
-        seller.setDeparment(deparment);
+        seller.setDeparment(department);
 
         return seller;
     }
 
-    private Deparment instantiateDeparment(ResultSet resultSet) throws SQLException {
-        Deparment deparment = new Deparment();
-        deparment.setId(resultSet.getInt("DepartmentId"));
-        deparment.setName(resultSet.getString("DepName"));
+    private Department instantiateDeparment(ResultSet resultSet) throws SQLException {
+        Department department = new Department();
+        department.setId(resultSet.getInt("DepartmentId"));
+        department.setName(resultSet.getString("DepName"));
 
-        return deparment;
+        return department;
     }
 
     @Override
     public List<Seller> findAll() {
         return null;
+    }
+
+    @Override
+    public List<Seller> findByDepartment(Department department) {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = connection.prepareStatement(
+                    "SELECT seller.*,department.Name as DepName "
+                            + "FROM seller INNER JOIN department "
+                            + "ON seller.DepartmentId = department.Id "
+                            + "WHERE DepartmentId = ? "
+                            + "ORDER BY Name"
+            );
+
+            statement.setInt(1, department.getId());
+            resultSet = statement.executeQuery();
+
+            List<Seller> sellerList = new ArrayList<>();
+            Map<Integer, Department> map = new HashMap<>();
+
+            while (resultSet.next()) {
+
+                Department sellerDeparment = map.get(resultSet.getInt("DepartmentId"));
+
+                if (sellerDeparment == null) {
+                    sellerDeparment = instantiateDeparment(resultSet);
+                    map.put(resultSet.getInt("DepartmentId"), sellerDeparment);
+                }
+
+                Seller seller = instantiateSeller(resultSet, sellerDeparment);
+
+                sellerList.add(seller);
+            }
+            return sellerList;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(statement);
+            DB.closeResultSet(resultSet);
+        }
     }
 }

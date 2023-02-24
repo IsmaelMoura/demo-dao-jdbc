@@ -4,17 +4,17 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Deparment implements Serializable {
+public class Department implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private Integer id;
     private String name;
 
-    public Deparment() {
+    public Department() {
     }
 
-    public Deparment(Integer id, String name) {
+    public Department(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -39,8 +39,8 @@ public class Deparment implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Deparment deparment = (Deparment) o;
-        return Objects.equals(id, deparment.id);
+        Department department = (Department) o;
+        return Objects.equals(id, department.id);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Deparment implements Serializable {
 
     @Override
     public String toString() {
-        return "Deparment{" +
+        return "Department{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
