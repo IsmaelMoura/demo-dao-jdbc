@@ -6,7 +6,7 @@ import model.entities.Department;
 
 import java.util.List;
 
-public class Program2 {
+public class DepartmentTests {
     public static void main(String[] args) {
         DepartmentDao departmentDao = DaoFactory.createDeparmentDao();
 
@@ -19,18 +19,18 @@ public class Program2 {
         Department departmentById = departmentDao.findById(2);
         System.out.println(departmentById);
 
-        System.out.println("\n=== 3RD TEST: department update");
+        System.out.println("\n=== 3RD TEST: department update ===");
         Department departmentToUpdate = departmentDao.findById(2);
         departmentDao.update(departmentToUpdate);
         departmentToUpdate.setName("Food");
         System.out.println("Update completed");
 
         System.out.println("\n=== 4TH TEST: department deleteById ===");
-        Department departmentToDelete = departmentDao.findById(8);
+        Department departmentToDelete = departmentDao.findById(3);
         departmentDao.deleteById(departmentToDelete.getId());
         System.out.println("Delete completed");
 
-        System.out.println("\n=== 4TH TEST: department findAll ===");
+        System.out.println("\n=== 5TH TEST: department findAll ===");
         List<Department> allDepartments = departmentDao.findAll();
         allDepartments.forEach(System.out::println);
     }
