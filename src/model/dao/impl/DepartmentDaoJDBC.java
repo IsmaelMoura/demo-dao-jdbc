@@ -2,15 +2,17 @@ package model.dao.impl;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
 import model.entities.Seller;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
-    private Connection connection;
+    private final Connection connection;
 
     public DepartmentDaoJDBC(Connection connection) {
         this.connection = connection;
@@ -66,7 +68,18 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public void deleteById(Integer id) {
+        PreparedStatement statement = null;
 
+        try {
+            statement = connection.prepareStatement(
+                    "DELETE FROM department WHERE Id = ?"
+            );
+
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbIntegrityException(e.getMessage());
+        }
     }
 
     @Override
@@ -98,6 +111,32 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public List<Department> findAll() {
-        return null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Department> departments = new ArrayList<>();
+
+        try {
+            statement = connection.prepareStatement(
+                    "SELECT * FROM department ORDER BY Name;"
+            );
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Department department = new Department();
+
+                department.setId(resultSet.getInt("Id"));
+                department.setName(resultSet.getString("Name"));
+
+                departments.add(department);
+            }
+
+            return departments;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(statement);
+            DB.closeResultSet(resultSet);
+        }
     }
 }

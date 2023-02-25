@@ -96,6 +96,8 @@ public class SellerDaoJDBC implements SellerDao {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(statement);
         }
     }
 
@@ -118,9 +120,7 @@ public class SellerDaoJDBC implements SellerDao {
             if (resultSet.next()) {
                 Department department = instantiateDeparment(resultSet);
 
-                Seller seller = instantiateSeller(resultSet, department);
-
-                return seller;
+                return instantiateSeller(resultSet, department);
             }
             return null;
         } catch (SQLException e) {
