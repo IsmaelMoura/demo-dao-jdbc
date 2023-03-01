@@ -14,9 +14,12 @@ This repository contains a demo of how to use DAO with JDBC conecting MySQL Data
 
 ## How to test
 
+### Clone this repository
+On your workspace, clone this repository and open it in your preferred IDE (I suggest IntelliJ).
+
 ### Install MySQL
 You will need MySQL Workbeench to visualize all database information.
-- Link to download: https://dev.mysql.com/downloads/installer/
+- Link to download MySQL: https://dev.mysql.com/downloads/installer/
 
 ### Download MySQL Connector for Java
 To connect MySQL database with Java, we need MySQL Connector and JDBC API.
