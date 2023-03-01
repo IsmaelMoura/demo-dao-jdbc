@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-public class SellerTest {
+public class SellerTests {
     public static void main(String[] args) {
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
